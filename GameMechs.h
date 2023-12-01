@@ -21,9 +21,12 @@ class GameMechs
     private:
         char input;
         bool exitFlag;
+        bool loseFlag;
         
         int boardSizeX;
         int boardSizeY;
+
+        int score;
 
     public:
         GameMechs();
@@ -38,6 +41,9 @@ class GameMechs
 
         int getBoardSizeX();
         int getBoardSizeY();
+
+        int getScore();
+        void incrementScore(int points);
       
 
 };
