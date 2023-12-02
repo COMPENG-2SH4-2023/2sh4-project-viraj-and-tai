@@ -9,14 +9,9 @@ using namespace std;
 
 #define DELAY_CONST 100000
 
-GameMechs mechs(20, 10);
-GameMechs *mechsPtr = &mechs;
-
-Player player(mechsPtr);
-Player *playerPtr = &player;
-
-Food foodPos(mechsPtr);
-Food *foodPtr = &foodPos;
+GameMechs *mechsPtr = new GameMechs(20, 10);
+Player *playerPtr = new Player(mechsPtr);
+Food *foodPtr = new Food(mechsPtr);
 
 void Initialize(void);
 void GetInput(void);
@@ -49,7 +44,9 @@ void Initialize(void)
 {
     MacUILib_init();
     MacUILib_clearScreen();
-    foodPtr -> genFood();
+    objPos temp;
+    playerPtr -> getPlayerPos(temp);
+    foodPtr -> genFood(temp);
 }
 
 void GetInput(void)
@@ -91,6 +88,9 @@ void DrawScreen(void)
     objPos tempPlayer;
     playerPtr -> getPlayerPos(tempPlayer);
 
+    objPos tempFood;
+    foodPtr -> getFood(tempFood);
+
     for (int y = 0; y < yBounds; y++){
         for (int x = 0; x < xBounds; x++){
 
@@ -103,15 +103,17 @@ void DrawScreen(void)
             else if (x == tempPlayer.x && y == tempPlayer.y){
                 MacUILib_printf("%c", tempPlayer.symbol);
             }
-            else if (x == foodPos.x && y == foodPos.y){
-                MacUILib_printf("%c", foodPos.symbol);
+            else if (x == tempFood.x && y == tempFood.y){
+                MacUILib_printf("%c", 'a');
             }
             else{
                 MacUILib_printf(" ");
             }
         }
         printf("\n");
-    }    
+    }
+    MacUILib_printf("x: %d, y: %d", tempFood.x, tempFood.y);
+
 
 }
 
@@ -123,7 +125,11 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
-    MacUILib_clearScreen();    
+    MacUILib_clearScreen();   
+
+    delete mechsPtr;
+    delete playerPtr;
+    delete foodPtr;
   
     MacUILib_uninit();
 }
