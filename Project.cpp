@@ -45,7 +45,7 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
     objPos temp;
-    playerPtr -> getPlayerPos(temp);
+    playerPtr -> getPlayerHead(temp);
     foodPtr -> genFood(temp);
 }
 
@@ -77,12 +77,13 @@ void RunLogic(void)
     mechsPtr -> clearInput();
    
     objPos temp;
-    playerPtr -> getPlayerPos(temp);
+    playerPtr -> getPlayerHead(temp);
 
     objPos tempFood;
     foodPtr -> getFood(tempFood);
     if(tempFood.x == temp.x && tempFood.y == temp.y)
     {
+        mechsPtr -> incrementScore(1);
         foodPtr -> genFood(temp);
     }
 
@@ -95,14 +96,24 @@ void DrawScreen(void)
     int yBounds = mechsPtr -> getBoardSizeY();
     int xBounds = mechsPtr -> getBoardSizeX();
 
-    objPos tempPlayer;
-    playerPtr -> getPlayerPos(tempPlayer);
+    objPosArrayList* playerPosList = playerPtr -> getPlayerList();
 
-    objPos tempFood;
-    foodPtr -> getFood(tempFood);
+    objPos playerNode;
 
+    objPos food;
+    foodPtr -> getFood(food);
+
+    int printed;
     for (int y = 0; y < yBounds; y++){
         for (int x = 0; x < xBounds; x++){
+            printed = 0;
+            for (int i = 0; i < playerPosList->getSize();i++){
+                playerPosList -> getElement(playerNode, i);
+                if (x == playerNode.x && y == playerNode.y){
+                    MacUILib_printf("%c", playerNode.symbol);
+                    printed = 1;
+                }
+            }
 
             if (y == 0 || y == yBounds -1){
                 MacUILib_printf("#");               
@@ -110,19 +121,17 @@ void DrawScreen(void)
             else if (x == 0 || x == xBounds-1){
                 MacUILib_printf("#");
             }
-            else if (x == tempPlayer.x && y == tempPlayer.y){
-                MacUILib_printf("%c", tempPlayer.symbol);
+            else if (x == food.x && y == food.y){
+                MacUILib_printf("%c", food.symbol);
             }
-            else if (x == tempFood.x && y == tempFood.y){
-                MacUILib_printf("%c", 'a');
-            }
-            else{
+            else if (printed == 0){
                 MacUILib_printf(" ");
             }
         }
         printf("\n");
     }
-    MacUILib_printf("x: %d, y: %d", tempFood.x, tempFood.y);
+    MacUILib_printf("x: %d, y: %d c: %c\n", playerNode.x, playerNode.y, playerNode.symbol);
+    MacUILib_printf("score: %d, size: %d\n", mechsPtr->getScore(), playerPosList->getSize());
 
 
 }

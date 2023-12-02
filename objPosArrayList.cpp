@@ -61,16 +61,19 @@ void objPosArrayList::getHeadElement(objPos &returnPos)
 {
     returnPos.x = aList[0].x;
     returnPos.y = aList[0].y;
+    returnPos.symbol = aList[0].symbol;
 }
 
 void objPosArrayList::getTailElement(objPos &returnPos)
 {
     returnPos.x = aList[sizeList - 1].x;
     returnPos.y = aList[sizeList - 1].y;
+    returnPos.symbol = aList[sizeList - 1].symbol;
 }
 
 void objPosArrayList::getElement(objPos &returnPos, int index)
 {
     returnPos.x = aList[index].x;
     returnPos.y = aList[index].y;
+    returnPos.symbol = aList[index].symbol;
 }

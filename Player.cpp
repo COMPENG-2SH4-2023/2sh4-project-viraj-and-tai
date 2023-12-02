@@ -7,7 +7,13 @@ Player::Player(GameMechs* thisGMRef)
     myDir = STOP;
 
     mainGameMechsRef = thisGMRef;
-    playerPos.setObjPos(10, 5, '*');
+
+    objPos head;
+    head.setObjPos(10,5,'*');
+
+    playerPosList = new objPosArrayList();
+    playerPosList -> insertHead(head);
+
     // more actions to be included
 }
 
@@ -16,12 +22,19 @@ Player::~Player()
 {
     // delete any heap members here
     delete mainGameMechsRef;
+    delete playerPosList;
 }
 
-void Player::getPlayerPos(objPos &returnPos)
+void Player::getPlayerHead(objPos &returnPos)
 {
+    
+    playerPosList->getHeadElement(returnPos);
+}
+
+objPosArrayList* Player::getPlayerList(){
+
     // return the reference to the playerPos arrray list
-    playerPos.getObjPos(returnPos);
+    return playerPosList;
 }
 
 void Player::updatePlayerDir()
@@ -110,50 +123,62 @@ void Player::movePlayer()
         case LEFT:
         default:
 
-            playerPos.getObjPos(temp);
+            playerPosList->getHeadElement(temp);
             temp.x -= 1;
             if (temp.x <= 0){
-                playerPos.setObjPos(xBounds-2, temp.y, temp.symbol);
+                temp.x = xBounds - 2;
+                playerPosList->insertHead(temp);
+                playerPosList->removeTail();
             }
             else{
-                playerPos.setObjPos(temp);
+                playerPosList->insertHead(temp);
+                playerPosList->removeTail();
             }
 
             break;
 
         case RIGHT:
 
-            playerPos.getObjPos(temp);
+            playerPosList->getHeadElement(temp);
             temp.x += 1;
             if (temp.x >= xBounds - 1){
-                playerPos.setObjPos(1, temp.y, temp.symbol);
+                temp.x = 1;
+                playerPosList->insertHead(temp);
+                playerPosList->removeTail();
             }
             else{
-                playerPos.setObjPos(temp);
+                playerPosList->insertHead(temp);
+                playerPosList->removeTail();
             }
             break;
 
         case UP:
 
-            playerPos.getObjPos(temp);
+            playerPosList->getHeadElement(temp);
             temp.y -= 1;
             if (temp.y <= 0){
-                playerPos.setObjPos(temp.x, yBounds - 2, temp.symbol);
+                temp.y = yBounds - 2;
+                playerPosList->insertHead(temp);
+                playerPosList->removeTail();
             }
             else{
-                playerPos.setObjPos(temp);
+                playerPosList->insertHead(temp);
+                playerPosList->removeTail();
             }
             break;
 
         case DOWN:
 
-            playerPos.getObjPos(temp);
+            playerPosList->getHeadElement(temp);
             temp.y += 1;
             if (temp.y >= yBounds - 1){
-                playerPos.setObjPos(temp.x, 1, temp.symbol);
+                temp.y = 1;
+                playerPosList->insertHead(temp);
+                playerPosList->removeTail();
             }
             else{
-                playerPos.setObjPos(temp);
+                playerPosList->insertHead(temp);
+                playerPosList->removeTail();
             }
             break;
         case STOP:

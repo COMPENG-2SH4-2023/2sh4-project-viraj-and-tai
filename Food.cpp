@@ -46,4 +46,5 @@ void Food::getFood(objPos &returnPos)
 {
     returnPos.x = foodPos.x;
     returnPos.y = foodPos.y;
+    returnPos.symbol = foodPos.symbol;
 }
