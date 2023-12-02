@@ -81,7 +81,7 @@ void RunLogic(void)
 
     objPos tempFood;
     foodPtr -> getFood(tempFood);
-    if(tempfood.x == temp.x && tempfood.y == temp.y)
+    if(tempFood.x == temp.x && tempFood.y == temp.y)
     {
         foodPtr -> genFood(temp);
     }
