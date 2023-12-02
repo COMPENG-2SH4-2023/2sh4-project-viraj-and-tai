@@ -72,10 +72,20 @@ void RunLogic(void)
         }
     }
 
-   playerPtr -> movePlayer();
-   playerPtr -> updatePlayerDir();
-   mechsPtr -> clearInput();
+    playerPtr -> movePlayer();
+    playerPtr -> updatePlayerDir();
+    mechsPtr -> clearInput();
    
+    objPos temp;
+    playerPtr -> getPlayerPos(temp);
+
+    objPos tempFood;
+    foodPtr -> getFood(tempFood);
+    if(tempfood.x == temp.x && tempfood.y == temp.y)
+    {
+        foodPtr -> genFood(temp);
+    }
+
 }
 
 void DrawScreen(void)
