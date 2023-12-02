@@ -30,7 +30,7 @@ void objPosArrayList::insertHead(objPos thisPos)
     {
         aList[i] = aList[i - 1];
     }
-    aList[0].setObjPos(thisPos.x,thisPos.y, '0');
+    aList[0].setObjPos(thisPos.x,thisPos.y, thisPos.symbol);
     sizeList++;
 }
 
@@ -39,7 +39,7 @@ void objPosArrayList::insertTail(objPos thisPos)
     if(sizeList == sizeArray){
     return;
     }
-    aList[sizeList].setObjPos(thisPos.x,thisPos.y,'0');
+    aList[sizeList].setObjPos(thisPos.x,thisPos.y,thisPos.symbol);
     sizeList++;
 }
 
@@ -65,8 +65,8 @@ void objPosArrayList::getHeadElement(objPos &returnPos)
 
 void objPosArrayList::getTailElement(objPos &returnPos)
 {
-    returnPos.x = aList[sizeList].x;
-    returnPos.y = aList[sizeList].y;
+    returnPos.x = aList[sizeList - 1].x;
+    returnPos.y = aList[sizeList - 1].y;
 }
 
 void objPosArrayList::getElement(objPos &returnPos, int index)
