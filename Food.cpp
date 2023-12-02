@@ -14,7 +14,7 @@ Food::~Food(){
     delete mainGameMechsRef;
 }
 
-void Food::genFood(objPos blockOff)
+void Food::genFood(objPosArrayList* playerPosList)
 {
     int y = mainGameMechsRef->getBoardSizeY();
     int x = mainGameMechsRef->getBoardSizeX();
@@ -24,13 +24,18 @@ void Food::genFood(objPos blockOff)
     int success = 0;
     srand(time(NULL));
 
+    objPos food;
+
     while(success == 0){
         xRand = (rand() % (x-2)) + 1;
         yRand = (rand() % (y-2)) + 1;
-        if(xRand == blockOff.x && yRand == blockOff.y)
-            {
+        for (int i = 0; i < playerPosList->getSize();i++){
+            playerPosList -> getElement(food, i);
+            if (food.x == xRand && food.y == yRand){
                 myBitV[yRand][xRand] = 1;
             }
+        }
+
         if(myBitV[yRand][xRand] == 0)
         {
             myBitV[yRand][xRand] = 1;

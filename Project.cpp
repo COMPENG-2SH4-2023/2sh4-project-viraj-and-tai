@@ -10,8 +10,10 @@ using namespace std;
 #define DELAY_CONST 100000
 
 GameMechs *mechsPtr = new GameMechs(20, 10);
-Player *playerPtr = new Player(mechsPtr);
 Food *foodPtr = new Food(mechsPtr);
+Player *playerPtr = new Player(mechsPtr, foodPtr);
+objPosArrayList* wallsList = new objPosArrayList();
+
 
 void Initialize(void);
 void GetInput(void);
@@ -46,7 +48,25 @@ void Initialize(void)
     MacUILib_clearScreen();
     objPos temp;
     playerPtr -> getPlayerHead(temp);
-    foodPtr -> genFood(temp);
+    foodPtr -> genFood(playerPtr -> getPlayerList());
+
+
+    objPos wall;
+    int yBounds = mechsPtr -> getBoardSizeY();
+    int xBounds = mechsPtr -> getBoardSizeX();
+    for (int y = 0; y < yBounds; y++){
+        for (int x = 0; x < xBounds; x++){
+
+            if (y == 0 || y == yBounds -1){
+                wall.setObjPos(x,y,'#');
+                wallsList -> insertHead(wall);              
+            }
+            else if (x == 0 || x == xBounds-1){
+                wall.setObjPos(x,y,'#');
+                wallsList -> insertHead(wall);   
+            }
+        }
+    }
 }
 
 void GetInput(void)
@@ -75,17 +95,17 @@ void RunLogic(void)
     playerPtr -> movePlayer();
     playerPtr -> updatePlayerDir();
     mechsPtr -> clearInput();
-   
-    objPos temp;
-    playerPtr -> getPlayerHead(temp);
 
-    objPos tempFood;
-    foodPtr -> getFood(tempFood);
-    if(tempFood.x == temp.x && tempFood.y == temp.y)
-    {
-        mechsPtr -> incrementScore(1);
-        foodPtr -> genFood(temp);
-    }
+    // objPos temp;
+    // playerPtr -> getPlayerHead(temp);
+
+    // objPos tempFood;
+    // foodPtr -> getFood(tempFood);
+    // if(tempFood.x == temp.x && tempFood.y == temp.y)
+    // {
+    //     mechsPtr -> incrementScore(1);
+    //     foodPtr -> genFood(temp);
+    // }
 
 }
 
@@ -99,6 +119,7 @@ void DrawScreen(void)
     objPosArrayList* playerPosList = playerPtr -> getPlayerList();
 
     objPos playerNode;
+    objPos wallNode;
 
     objPos food;
     foodPtr -> getFood(food);
@@ -115,23 +136,25 @@ void DrawScreen(void)
                 }
             }
 
-            if (y == 0 || y == yBounds -1){
-                MacUILib_printf("#");               
+            for (int j = 0; j < wallsList->getSize();j++){
+                wallsList -> getElement(wallNode, j);
+                if (x == wallNode.x && y == wallNode.y){
+                    MacUILib_printf("%c", wallNode.symbol);
+                    printed = 1;
+                }
             }
-            else if (x == 0 || x == xBounds-1){
-                MacUILib_printf("#");
-            }
-            else if (x == food.x && y == food.y){
+
+            if (x == food.x && y == food.y){
                 MacUILib_printf("%c", food.symbol);
             }
             else if (printed == 0){
                 MacUILib_printf(" ");
             }
         }
-        printf("\n");
+        MacUILib_printf("\n");
     }
-    MacUILib_printf("x: %d, y: %d c: %c\n", playerNode.x, playerNode.y, playerNode.symbol);
-    MacUILib_printf("score: %d, size: %d\n", mechsPtr->getScore(), playerPosList->getSize());
+    MacUILib_printf("Use WASD to control the snake\n\n");
+    MacUILib_printf("score: %d, snake size: %d\n", mechsPtr->getScore(), playerPosList->getSize());
 
 
 }
@@ -144,7 +167,12 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
-    MacUILib_clearScreen();   
+    MacUILib_clearScreen();
+
+    if(mechsPtr -> getLoseFlagStatus()){
+        MacUILib_printf("\nYou Lose :(\n");
+    }
+    MacUILib_printf("Final Score: %d\n", mechsPtr->getScore());   
 
     delete mechsPtr;
     delete playerPtr;

@@ -1,12 +1,12 @@
 #include "Player.h"
 
 
-Player::Player(GameMechs* thisGMRef)
+Player::Player(GameMechs* thisGMRef, Food* thisFoodRef)
 {
     mainGameMechsRef = thisGMRef;
     myDir = STOP;
 
-    mainGameMechsRef = thisGMRef;
+    mainGameFoodRef = thisFoodRef;
 
     objPos head;
     head.setObjPos(10,5,'*');
@@ -22,6 +22,7 @@ Player::~Player()
 {
     // delete any heap members here
     delete mainGameMechsRef;
+    delete mainGameFoodRef;
     delete playerPosList;
 }
 
@@ -114,75 +115,150 @@ void Player::movePlayer()
 {
     // PPA3 Finite State Machine logic
 
-    objPos temp;
+    objPos head, food, playerNode;
     int xBounds = mainGameMechsRef->getBoardSizeX();
     int yBounds = mainGameMechsRef->getBoardSizeY();
 
+
+    playerPosList->getHeadElement(head);
+    mainGameFoodRef->getFood(food);
     switch(myDir){
 
         case LEFT:
         default:
 
-            playerPosList->getHeadElement(temp);
-            temp.x -= 1;
-            if (temp.x <= 0){
-                temp.x = xBounds - 2;
-                playerPosList->insertHead(temp);
-                playerPosList->removeTail();
+            
+            head.x -= 1;
+            if(compareCOORD(head, food)){
+                playerPosList->insertHead(head);
+                mainGameFoodRef->genFood(playerPosList);
+                mainGameMechsRef->incrementScore(1);
+
             }
             else{
-                playerPosList->insertHead(temp);
-                playerPosList->removeTail();
+
+                if (head.x <= 0){
+                    head.x = xBounds - 2;
+                    playerPosList->insertHead(head);
+                    playerPosList->removeTail();
+                }
+                else{
+                    playerPosList->insertHead(head);
+                    playerPosList->removeTail();
+                }
             }
 
-            break;
+            //starts at one so we can check the head versus every body node, and not head vs head
+            for (int i = 1; i < playerPosList->getSize();i++){
+                playerPosList->getElement(playerNode, i);
+                    if (compareCOORD(head, playerNode)){
+                        mainGameMechsRef->setLoseTrue();
+                    }
+                }
+
+            break;   
 
         case RIGHT:
 
-            playerPosList->getHeadElement(temp);
-            temp.x += 1;
-            if (temp.x >= xBounds - 1){
-                temp.x = 1;
-                playerPosList->insertHead(temp);
-                playerPosList->removeTail();
+            head.x += 1;
+            if(compareCOORD(head, food)){
+                playerPosList->insertHead(head);
+                mainGameFoodRef->genFood(playerPosList);
+                mainGameMechsRef->incrementScore(1);
+
             }
             else{
-                playerPosList->insertHead(temp);
-                playerPosList->removeTail();
+                if (head.x >= xBounds - 1){
+                    head.x = 1;
+                    playerPosList->insertHead(head);
+                    playerPosList->removeTail();
+                }
+                else{
+                    playerPosList->insertHead(head);
+                    playerPosList->removeTail();
+                }
             }
-            break;
+
+            for (int i = 1; i < playerPosList->getSize();i++){
+                playerPosList->getElement(playerNode, i);
+                    if (compareCOORD(head, playerNode)){
+                        mainGameMechsRef->setLoseTrue();
+                    }
+                }
+
+            break; 
 
         case UP:
 
-            playerPosList->getHeadElement(temp);
-            temp.y -= 1;
-            if (temp.y <= 0){
-                temp.y = yBounds - 2;
-                playerPosList->insertHead(temp);
-                playerPosList->removeTail();
+            head.y -= 1;
+            if(compareCOORD(head, food)){
+                playerPosList->insertHead(head);
+                mainGameFoodRef->genFood(playerPosList);
+                mainGameMechsRef->incrementScore(1);
+
             }
             else{
-                playerPosList->insertHead(temp);
-                playerPosList->removeTail();
+                if (head.y <= 0){
+                    head.y = yBounds - 2;
+                    playerPosList->insertHead(head);
+                    playerPosList->removeTail();
+                }
+                else{
+                    playerPosList->insertHead(head);
+                    playerPosList->removeTail();
+                }
             }
-            break;
+
+            for (int i = 1; i < playerPosList->getSize();i++){
+                playerPosList->getElement(playerNode, i);
+                    if (compareCOORD(head, playerNode)){
+                        mainGameMechsRef->setLoseTrue();
+                    }
+                }
+
+            break; 
 
         case DOWN:
 
-            playerPosList->getHeadElement(temp);
-            temp.y += 1;
-            if (temp.y >= yBounds - 1){
-                temp.y = 1;
-                playerPosList->insertHead(temp);
-                playerPosList->removeTail();
+            head.y += 1;
+            if(compareCOORD(head, food)){
+                playerPosList->insertHead(head);
+                mainGameFoodRef->genFood(playerPosList);
+                mainGameMechsRef->incrementScore(1);
+
             }
             else{
-                playerPosList->insertHead(temp);
-                playerPosList->removeTail();
+                if (head.y >= yBounds - 1){
+                    head.y = 1;
+                    playerPosList->insertHead(head);
+                    playerPosList->removeTail();
+                }
+                else{
+                    playerPosList->insertHead(head);
+                    playerPosList->removeTail();
+                }
             }
-            break;
+
+            for (int i = 1; i < playerPosList->getSize();i++){
+                playerPosList->getElement(playerNode, i);
+                    if (compareCOORD(head, playerNode)){
+                        mainGameMechsRef->setLoseTrue();
+                    }
+                }
+
+            break; 
+            
         case STOP:
             break;
     }
 }
 
+
+//simple helper function used to reduce copy pasted code
+bool Player::compareCOORD(objPos obj1, objPos obj2){
+    if (obj1.x == obj2.x && obj1.y == obj2.y){
+        return true;
+    }
+
+    return false;
+}
