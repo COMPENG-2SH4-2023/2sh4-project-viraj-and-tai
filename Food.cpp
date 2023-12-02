@@ -10,6 +10,8 @@ Food::Food(GameMechs* thisGMRef)
 }
 
 Food::~Food(){
+
+    delete mainGameMechsRef;
 }
 
 void Food::genFood(objPos blockOff)
