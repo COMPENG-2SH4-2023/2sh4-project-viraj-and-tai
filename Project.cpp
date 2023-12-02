@@ -3,7 +3,7 @@
 #include "objPos.h"
 #include "Player.h"
 #include "GameMechs.h"
-
+#include "Food.h"
 
 using namespace std;
 
@@ -14,6 +14,9 @@ GameMechs *mechsPtr = &mechs;
 
 Player player(mechsPtr);
 Player *playerPtr = &player;
+
+Food foodPos(mechsPtr);
+Food *foodPtr = &foodPos;
 
 void Initialize(void);
 void GetInput(void);
@@ -46,7 +49,7 @@ void Initialize(void)
 {
     MacUILib_init();
     MacUILib_clearScreen();
-
+    foodPtr -> genFood();
 }
 
 void GetInput(void)
@@ -75,6 +78,7 @@ void RunLogic(void)
    playerPtr -> movePlayer();
    playerPtr -> updatePlayerDir();
    mechsPtr -> clearInput();
+   
 }
 
 void DrawScreen(void)
@@ -99,7 +103,9 @@ void DrawScreen(void)
             else if (x == tempPlayer.x && y == tempPlayer.y){
                 MacUILib_printf("%c", tempPlayer.symbol);
             }
-
+            else if (x == foodPos.x && y == foodPos.y){
+                MacUILib_printf("%c", foodPos.symbol);
+            }
             else{
                 MacUILib_printf(" ");
             }
