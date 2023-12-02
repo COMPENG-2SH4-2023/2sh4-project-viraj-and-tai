@@ -4,9 +4,16 @@ Project Preparation Activity 3
 
 You must watch the briefing video and read through the manual to engage in the development activities.
 
+Viraj Bane:
+Section: [L09]
 
-Section: [Insert your lab section]
+MacID: [banev]
 
-MacID: [Insert your macID here]
+StudentID: [400399205]
 
-StudentID: [Insert your numerical student ID here]
+Tai Li:
+Section: [L08]
+
+MacID: [li15568]
+
+StudentID: [400378350]
