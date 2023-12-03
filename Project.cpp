@@ -121,8 +121,8 @@ void DrawScreen(void)
     objPos playerNode;
     objPos wallNode;
 
-    objPos food;
-    foodPtr -> getFood(food);
+    objPosArrayList* foodBucket = foodPtr -> getFoodBucket();
+    objPos foodNode;
 
     int printed;
     for (int y = 0; y < yBounds; y++){
@@ -144,18 +144,24 @@ void DrawScreen(void)
                 }
             }
 
-            if (x == food.x && y == food.y){
-                MacUILib_printf("%c", food.symbol);
+            for (int k = 0; k < foodBucket->getSize();k++){
+                foodBucket -> getElement(foodNode, k);
+                if (x == foodNode.x && y == foodNode.y){
+                    MacUILib_printf("%c", foodNode.symbol);
+                    printed = 1;
+                }
             }
-            else if (printed == 0){
+
+            if (printed == 0){
                 MacUILib_printf(" ");
             }
         }
         MacUILib_printf("\n");
     }
     MacUILib_printf("Use WASD to control the snake\n\n");
+    MacUILib_printf("a: +1 point, +1 length, o: +10 points, +1 length, x: +3 points -3 length\n");
+    MacUILib_printf("Warning: Eating 'x' at 3 or less length cause death\n");
     MacUILib_printf("score: %d, snake size: %d\n", mechsPtr->getScore(), playerPosList->getSize());
-
 
 }
 
@@ -177,6 +183,7 @@ void CleanUp(void)
     delete mechsPtr;
     delete playerPtr;
     delete foodPtr;
+    delete wallsList;
   
     MacUILib_uninit();
 }

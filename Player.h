@@ -34,6 +34,7 @@ class Player
         Food* mainGameFoodRef;
 
         bool compareCOORD(objPos obj1, objPos obj2);
+        void foodCollisionHandler(objPos playerNode, char foodType);
 };
 
 #endif

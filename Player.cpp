@@ -121,7 +121,8 @@ void Player::movePlayer()
 
 
     playerPosList->getHeadElement(head);
-    mainGameFoodRef->getFood(food);
+    objPosArrayList* foodBucket = mainGameFoodRef->getFoodBucket();
+    int impact = 0;
     switch(myDir){
 
         case LEFT:
@@ -129,11 +130,15 @@ void Player::movePlayer()
 
             
             head.x -= 1;
-            if(compareCOORD(head, food)){
-                playerPosList->insertHead(head);
-                mainGameFoodRef->genFood(playerPosList);
-                mainGameMechsRef->incrementScore(1);
-
+            for(int i = 0; i < foodBucket->getSize(); i++){
+                foodBucket->getElement(food, i);
+                if (compareCOORD(head, food)){
+                    impact = 1;
+                    break;
+                }
+            }
+            if(impact == 1){
+                foodCollisionHandler(head, food.symbol);
             }
             else{
 
@@ -161,11 +166,16 @@ void Player::movePlayer()
         case RIGHT:
 
             head.x += 1;
-            if(compareCOORD(head, food)){
-                playerPosList->insertHead(head);
-                mainGameFoodRef->genFood(playerPosList);
-                mainGameMechsRef->incrementScore(1);
+            for(int i = 0; i < foodBucket->getSize(); i++){
+                foodBucket->getElement(food, i);
+                if (compareCOORD(head, food)){
+                    impact = 1;
+                    break;
+                }
+            }
+            if(impact == 1){
 
+                foodCollisionHandler(head, food.symbol);
             }
             else{
                 if (head.x >= xBounds - 1){
@@ -191,11 +201,16 @@ void Player::movePlayer()
         case UP:
 
             head.y -= 1;
-            if(compareCOORD(head, food)){
-                playerPosList->insertHead(head);
-                mainGameFoodRef->genFood(playerPosList);
-                mainGameMechsRef->incrementScore(1);
-
+            for(int i = 0; i < foodBucket->getSize(); i++){
+                foodBucket->getElement(food, i);
+                if (compareCOORD(head, food)){
+                    impact = 1;
+                    break;
+                }
+            }
+            if(impact == 1){
+                
+                foodCollisionHandler(head, food.symbol);
             }
             else{
                 if (head.y <= 0){
@@ -221,11 +236,16 @@ void Player::movePlayer()
         case DOWN:
 
             head.y += 1;
-            if(compareCOORD(head, food)){
-                playerPosList->insertHead(head);
-                mainGameFoodRef->genFood(playerPosList);
-                mainGameMechsRef->incrementScore(1);
+            for(int i = 0; i < foodBucket->getSize(); i++){
+                foodBucket->getElement(food, i);
+                if (compareCOORD(head, food)){
+                    impact = 1;
+                    break;
+                }
+            }
+            if(impact == 1){
 
+                foodCollisionHandler(head, food.symbol);
             }
             else{
                 if (head.y >= yBounds - 1){
@@ -255,10 +275,36 @@ void Player::movePlayer()
 
 
 //simple helper function used to reduce copy pasted code
+//compares object coordinates of two objPos objects and returns a boolean based on results
 bool Player::compareCOORD(objPos obj1, objPos obj2){
     if (obj1.x == obj2.x && obj1.y == obj2.y){
         return true;
     }
 
     return false;
+}
+
+void Player::foodCollisionHandler(objPos playerNode, char foodType){
+
+    if(foodType == 'a'){
+        playerPosList->insertHead(playerNode);
+        mainGameFoodRef->genFood(playerPosList);
+        mainGameMechsRef->incrementScore(1);
+    }else if (foodType == 'o'){
+        playerPosList->insertHead(playerNode);
+        mainGameFoodRef->genFood(playerPosList);
+        mainGameMechsRef->incrementScore(10);
+    }else if (foodType == 'x'){
+        for(int i = 0; i < 3; i++){
+            playerPosList->removeTail();
+            mainGameMechsRef->incrementScore(1);
+            if (playerPosList->getSize() <= 0){
+                mainGameMechsRef->setLoseTrue();
+            }
+        }
+        mainGameFoodRef->genFood(playerPosList);
+        
+
+    }
+
 }

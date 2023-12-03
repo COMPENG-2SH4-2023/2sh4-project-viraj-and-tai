@@ -8,7 +8,8 @@
 class Food{
 
     private:
-    objPos foodPos;
+    //objPos foodPos;
+    objPosArrayList* foodBucket;
     GameMechs* mainGameMechsRef;
 
     public:
@@ -16,7 +17,8 @@ class Food{
     ~Food();
 
     void genFood(objPosArrayList* playerPosList);
-    void getFood(objPos &returnPos);
+    // void getFood(objPos &returnPos);
+    objPosArrayList* getFoodBucket();
 };
 
 #endif
