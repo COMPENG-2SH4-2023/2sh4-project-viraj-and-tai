@@ -7,7 +7,6 @@ Food::Food(GameMechs* thisGMRef)
 {
     mainGameMechsRef = thisGMRef;
     foodBucket = new objPosArrayList();
-    //foodPos.setObjPos(5, 7, 'a');
 }
 
 Food::~Food(){
@@ -34,7 +33,7 @@ void Food::genFood(objPosArrayList* playerPosList)
     srand(time(NULL));
 
     //temporary objPos objects used for manipulating data from getters and setters
-    objPos food;
+    objPos temp;
     objPos foodPos;
 
     //spawn 1 regular food
@@ -42,8 +41,8 @@ void Food::genFood(objPosArrayList* playerPosList)
         xRand = (rand() % (x-2)) + 1;
         yRand = (rand() % (y-2)) + 1;
         for (int i = 0; i < playerPosList->getSize();i++){
-            playerPosList -> getElement(food, i);
-            if (food.x == xRand && food.y == yRand){
+            playerPosList -> getElement(temp, i);
+            if (temp.x == xRand && temp.y == yRand){
                 myBitV[yRand][xRand] = 1;
             }
         }
@@ -59,13 +58,14 @@ void Food::genFood(objPosArrayList* playerPosList)
         }
     }
 
+    //spawn 1 special food
     success = 0;
     while(success == 0){
         xRand = (rand() % (x-2)) + 1;
         yRand = (rand() % (y-2)) + 1;
         for (int i = 0; i < playerPosList->getSize();i++){
-            playerPosList -> getElement(food, i);
-            if (food.x == xRand && food.y == yRand){
+            playerPosList -> getElement(temp, i);
+            if (temp.x == xRand && temp.y == yRand){
                 myBitV[yRand][xRand] = 1;
             }
         }
@@ -76,6 +76,7 @@ void Food::genFood(objPosArrayList* playerPosList)
             foodPos.x = xRand;
             foodPos.y = yRand;
             //randomly select a special food type based on the even/odd-ness of a rng number from 1 to 100
+            //check Player::foodCollisionHandler() for details on what food types do what
             if ((1 + (rand() % 100)) % 2){
                 foodPos.symbol = 'x';
             }else{
@@ -88,13 +89,6 @@ void Food::genFood(objPosArrayList* playerPosList)
     }
 
 }
-
-// void Food::getFood(objPos &returnPos)
-// {
-//     returnPos.x = foodPos.x;
-//     returnPos.y = foodPos.y;
-//     returnPos.symbol = foodPos.symbol;
-// }
 
 objPosArrayList* Food::getFoodBucket(){
     return foodBucket;

@@ -20,7 +20,6 @@ class Player
         Player(GameMechs* thisGMRef, Food* thisFoodRef);
         ~Player();
 
-        void getPlayerHead(objPos &returnPos); // Upgrade this in iteration 3.
         objPosArrayList* getPlayerList();
         void updatePlayerDir();
         void movePlayer();
@@ -29,10 +28,11 @@ class Player
         objPosArrayList* playerPosList;   // Upgrade this in iteration 3.       
         enum Dir myDir;
 
-        // Need a reference to the Main Game Mechanisms
+        // Need a reference to the Main Game Mechanisms and Food classs
         GameMechs* mainGameMechsRef;
         Food* mainGameFoodRef;
 
+        //Additional helper functions to reduce copy paste, see player.cpp file for info
         bool compareCOORD(objPos obj1, objPos obj2);
         void foodCollisionHandler(objPos playerNode, char foodType);
 };

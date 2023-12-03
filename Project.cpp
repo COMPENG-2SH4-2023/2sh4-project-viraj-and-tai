@@ -22,13 +22,12 @@ void DrawScreen(void);
 void LoopDelay(void);
 void CleanUp(void);
 
-
-
 int main(void)
 {
 
     Initialize();
 
+    //run while the exit flag is false
     while(mechsPtr -> getExitFlagStatus() == false)  
     {
         GetInput();
@@ -46,11 +45,10 @@ void Initialize(void)
 {
     MacUILib_init();
     MacUILib_clearScreen();
-    objPos temp;
-    playerPtr -> getPlayerHead(temp);
+    //initial food gen
     foodPtr -> genFood(playerPtr -> getPlayerList());
 
-
+    //creating and storing all wall objects in an arraylist
     objPos wall;
     int yBounds = mechsPtr -> getBoardSizeY();
     int xBounds = mechsPtr -> getBoardSizeX();
@@ -92,20 +90,10 @@ void RunLogic(void)
         }
     }
 
+    //standard movement logic, see individual functions for details
     playerPtr -> movePlayer();
     playerPtr -> updatePlayerDir();
     mechsPtr -> clearInput();
-
-    // objPos temp;
-    // playerPtr -> getPlayerHead(temp);
-
-    // objPos tempFood;
-    // foodPtr -> getFood(tempFood);
-    // if(tempFood.x == temp.x && tempFood.y == temp.y)
-    // {
-    //     mechsPtr -> incrementScore(1);
-    //     foodPtr -> genFood(temp);
-    // }
 
 }
 
@@ -124,10 +112,11 @@ void DrawScreen(void)
     objPosArrayList* foodBucket = foodPtr -> getFoodBucket();
     objPos foodNode;
 
-    int printed;
+    int printed;//flag used to determine if a ' ' char should be printed
     for (int y = 0; y < yBounds; y++){
         for (int x = 0; x < xBounds; x++){
             printed = 0;
+            //checking to see if a snake segment should be printed
             for (int i = 0; i < playerPosList->getSize();i++){
                 playerPosList -> getElement(playerNode, i);
                 if (x == playerNode.x && y == playerNode.y){
@@ -136,6 +125,7 @@ void DrawScreen(void)
                 }
             }
 
+            //checking to see if a wall object should be printed
             for (int j = 0; j < wallsList->getSize();j++){
                 wallsList -> getElement(wallNode, j);
                 if (x == wallNode.x && y == wallNode.y){
@@ -144,6 +134,7 @@ void DrawScreen(void)
                 }
             }
 
+            //checking to see if a piece of food should be printed
             for (int k = 0; k < foodBucket->getSize();k++){
                 foodBucket -> getElement(foodNode, k);
                 if (x == foodNode.x && y == foodNode.y){
@@ -152,12 +143,14 @@ void DrawScreen(void)
                 }
             }
 
+            //if all else did not print, print ' ' character
             if (printed == 0){
                 MacUILib_printf(" ");
             }
         }
         MacUILib_printf("\n");
     }
+    //game info print messages
     MacUILib_printf("Use WASD to control the snake\n\n");
     MacUILib_printf("a: +1 point, +1 length, o: +10 points, +1 length, x: +3 points -3 length\n");
     MacUILib_printf("Warning: Eating 'x' at 3 or less length cause death\n");
@@ -175,6 +168,7 @@ void CleanUp(void)
 {
     MacUILib_clearScreen();
 
+    //print different messages based on exit or lose conditional
     if(mechsPtr -> getLoseFlagStatus()){
         MacUILib_printf("\nYou Lose :(\n");
     }
